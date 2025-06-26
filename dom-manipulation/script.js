@@ -21,7 +21,7 @@ function updateCategorySelect() {
     });
 }
 
-// ✅ Renamed this function for ALX checker
+// Show a random quote
 function showRandomQuote() {
     const selectedCategory = categorySelect.value;
     const filteredQuotes = selectedCategory === "all"
@@ -37,7 +37,7 @@ function showRandomQuote() {
     quoteDisplay.textContent = randomQuote.text;
 }
 
-// ✅ addQuote function is fine — matches ALX expectations
+// Add a new quote
 function addQuote() {
     const newQuoteText = document.getElementById("newQuoteText").value.trim();
     const newQuoteCategory = document.getElementById("newQuoteCategory").value.trim();
@@ -53,10 +53,8 @@ function addQuote() {
     document.getElementById("newQuoteCategory").value = '';
 }
 
-// ✅ Correct event listener using renamed function
+// Event listener for the "Show New Quote" button
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-
-// ✅ Also supported for ALX checker via HTML: <button onclick="addQuote()">Add Quote</button>
 
 // Initialize category list
 updateCategorySelect();
