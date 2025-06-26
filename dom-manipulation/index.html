@@ -12,7 +12,7 @@
         <select id="categorySelect">
             <option value="all">All</option>
         </select>
-        <button id="newQuote">Show New Quote</button>
+        <button id="newQuote" onclick="showRandomQuote()">Show New Quote</button>
     </div>
     
     <div id="quoteDisplay" style="margin-top: 20px; font-style: italic;"></div>
@@ -21,7 +21,7 @@
         <h3>Add New Quote</h3>
         <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
         <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-        <button id="addQuote()">Add Quote</button>
+        <button onclick="addQuote()">Add Quote</button>
     </div>
     <script src="script.js"></script>
     </body>
