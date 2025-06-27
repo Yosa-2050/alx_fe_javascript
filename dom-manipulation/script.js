@@ -7,6 +7,7 @@ const quoteDisplay = document.getElementById('quoteDisplay');
 const newQuoteBtn = document.getElementById('newQuote');
 const addQuoteBtn = document.getElementById('addQuoteBtn');
 const exportBtn = document.getElementById('exportBtn');
+const notification = document.getElementById('notification');
 
 // Initialize app
 function init() {
@@ -17,6 +18,8 @@ function init() {
     addQuoteBtn.addEventListener('click', addQuote);
     exportBtn.addEventListener('click', exportQuotes);
     showRandomQuote(); // Show first quote on load
+    fetchQuotesFromServer(); // Start fetching quotes from server
+    setInterval(fetchQuotesFromServer, 30000); // Fetch new quotes every 30 seconds
 }
 
 // Load quotes from local storage
@@ -68,7 +71,6 @@ function restoreLastSelectedCategory() {
     const lastSelectedCategory = localStorage.getItem('lastSelectedCategory');
     if (lastSelectedCategory) {
         categoryFilter.value = lastSelectedCategory;
-        showRandomQuote();
     }
 }
 
@@ -117,6 +119,40 @@ function importFromJsonFile(event) {
         alert('Quotes imported successfully!');
     };
     fileReader.readAsText(event.target.files[0]);
+}
+
+// Fetch quotes from server
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts'); // Mock API
+        const serverQuotes = await response.json();
+        
+        // Simulate conflict resolution
+        const newQuotes = serverQuotes.map(q => ({
+            text: q.title, // Using title as quote text
+            category: 'General' // Assigning a default category
+        }));
+
+        // Check for conflicts and update local storage
+        if (JSON.stringify(newQuotes) !== JSON.stringify(quotes)) {
+            quotes = newQuotes; // Update local quotes with server data
+            saveQuotes(); // Save updated quotes to local storage
+            showNotification('Quotes updated from server.');
+            populateCategories(); // Update categories in dropdown
+            showRandomQuote(); // Show a new random quote
+        }
+    } catch (error) {
+        console.error('Error fetching quotes from server:', error);
+    }
+}
+
+// Show notification to user
+function showNotification(message) {
+    notification.textContent = message;
+    notification.style.display = 'block';
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 5000); // Hide notification after 5 seconds
 }
 
 // Start the application
