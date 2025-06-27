@@ -34,13 +34,51 @@
             background-color: #f9c2c2;
             color: #d8000c;
             border: 1px solid #d8000c;
+            border-radius: 4px;
             display: none;
+            position: relative;
+        }
+        #syncIcon.syncing {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        .conflict-btn {
+            padding: 5px 10px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        .conflict-btn:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
-    <h1>Dynamic Quote Generator</h1>
-    <div id="notification"></div>
+    <h1>Dynamic Quote Generator <span id="serverStatus" style="font-size: 0.6em; padding: 3px 6px; border-radius: 3px; background: #eee;">Server: Offline</span></h1>
+    <div id="syncStatus" style="font-size: 0.8em; color: #666; margin-bottom: 10px; background: #f0f0f0; padding: 8px; border-radius: 4px;">
+        <span id="syncIcon">⟳</span>
+        <span id="lastSyncTime">Never synced</span>
+        <button id="syncNowBtn" style="margin-left: 10px; padding: 2px 8px;">Sync Now</button>
+        <label style="margin-left: 15px;">
+            <input type="checkbox" id="autoSyncToggle" checked> Auto-sync every 
+            <select id="syncInterval">
+                <option value="30000">30 sec</option>
+                <option value="60000">1 min</option>
+                <option value="300000">5 min</option>
+            </select>
+        </label>
+    </div>
+    <div id="notification">
+        <div id="notificationContent"></div>
+        <div id="syncDetails" style="font-size: 0.9em; margin-top: 5px; display: none;">
+            <div>New quotes: <span id="newQuotesCount">0</span></div>
+            <div>Updated quotes: <span id="updatedQuotesCount">0</span></div>
+        </div>
+        <button id="dismissNotification" style="float: right; padding: 2px 5px;">×</button>
+        <button id="showDetailsBtn" style="float: right; margin-right: 5px; padding: 2px 5px; font-size: 0.8em;">Details</button>
+        <div style="clear: both;"></div>
+    </div>
     <div>
         <label for="categoryFilter">Filter by Category:</label>
         <select id="categoryFilter" onchange="filterQuotes()">
@@ -64,6 +102,29 @@
         <button id="exportBtn">Export Quotes</button>
         <button id="importBtn">Import Quotes</button>
         <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" style="display: none" />
+        <button id="manualSyncBtn" style="margin-left: 10px;">Sync Now</button>
+    </div>
+    <div id="conflictResolution" style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 4px; display: none;">
+        <h3 style="margin-top: 0; color: #856404;">Conflict Detected</h3>
+        <p id="conflictDetails"></p>
+        <div style="margin-top: 10px;">
+            <button id="keepLocalBtn" class="conflict-btn" data-action="keep-local">Keep Local Quotes</button>
+            <button id="useServerBtn" class="conflict-btn" data-action="use-server">Use Server Version</button>
+            <button id="mergeBtn" class="conflict-btn" data-action="merge">Merge Both</button>
+        </div>
+        <div id="mergePreview" style="margin-top: 15px; display: none; max-height: 300px; overflow-y: auto; background: white; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+            <h4>Merge Preview</h4>
+            <div style="display: flex;">
+                <div style="flex: 1; margin-right: 10px;">
+                    <h5>Your Quotes</h5>
+                    <div id="localQuotesPreview"></div>
+                </div>
+                <div style="flex: 1;">
+                    <h5>Server Quotes</h5>
+                    <div id="serverQuotesPreview"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
