@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Quote Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #quoteDisplay {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 3px solid #4CAF50;
+            font-style: italic;
+            font-size: 1.2em;
+        }
+        button, input, select {
+            padding: 8px;
+            margin: 5px 0;
+        }
+        #addQuoteForm {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>Dynamic Quote Generator</h1>
@@ -12,17 +37,17 @@
         <select id="categorySelect">
             <option value="all">All</option>
         </select>
-        <button id="newQuote" onclick="showRandomQuote()">Show New Quote</button>
+        <button id="newQuote">Show New Quote</button>
     </div>
     
-    <div id="quoteDisplay" style="margin-top: 20px; font-style: italic;"></div>
+    <div id="quoteDisplay">Click "Show New Quote" to begin</div>
     
-    <div id="addQuoteForm" style="margin-top: 20px;">
+    <div id="addQuoteForm">
         <h3>Add New Quote</h3>
         <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-        <button onclick="addQuote()">Add Quote</button>
+        <input id="newQuoteCategory" type="text" placeholder="Enter category" />
+        <button id="addQuoteBtn">Add Quote</button>
     </div>
     <script src="script.js"></script>
-    </body>
-    </html>
+</body>
+</html>

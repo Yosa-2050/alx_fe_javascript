@@ -1,74 +1,65 @@
-// Initial quotes
-let quotes = [
+// Quote data structure
+const quotes = [
     { text: "Success is not final, failure is not fatal.", category: "Motivation" },
     { text: "Stay hungry, stay foolish.", category: "Inspiration" },
     { text: "Life is short. Smile while you still have teeth.", category: "Humor" }
 ];
 
-// DOM references
-const categorySelect = document.getElementById("categorySelect");
-const quoteDisplay = document.getElementById("quoteDisplay");
+// DOM elements
+const categorySelect = document.getElementById('categorySelect');
+const quoteDisplay = document.getElementById('quoteDisplay');
+const newQuoteBtn = document.getElementById('newQuote');
+const addQuoteBtn = document.getElementById('addQuoteBtn');
 
-// Add initial categories to dropdown
-function updateCategorySelect() {
-    const categories = [...new Set(quotes.map(q => q.category))];
-    categorySelect.innerHTML = '<option value="all">All</option>';
-    categories.forEach(category => {
-        const option = document.createElement("option");
-        option.value = category;
-        option.textContent = category;
-        categorySelect.appendChild(option);
-    });
+// Initialize app
+function init() {
+    updateCategorySelect();
+    newQuoteBtn.addEventListener('click', showRandomQuote);
+    addQuoteBtn.addEventListener('click', addQuote);
+    showRandomQuote(); // Show first quote on load
 }
 
-// Show a random quote
+// Populate category dropdown
+function updateCategorySelect() {
+    const categories = ['all', ...new Set(quotes.map(q => q.category))];
+    categorySelect.innerHTML = categories.map(cat => 
+        `<option value="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`
+    ).join('');
+}
+
+// Show random quote from selected category
 function showRandomQuote() {
     const selectedCategory = categorySelect.value;
-    const filteredQuotes = selectedCategory === "all"
-        ? quotes
+    const filteredQuotes = selectedCategory === 'all' 
+        ? quotes 
         : quotes.filter(q => q.category === selectedCategory);
-
+        
     if (filteredQuotes.length === 0) {
-        quoteDisplay.textContent = "No quotes available.";
+        quoteDisplay.textContent = "No quotes available in this category.";
         return;
     }
-
-    const randomQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
-    quoteDisplay.textContent = randomQuote.text;
+    
+    const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+    quoteDisplay.textContent = filteredQuotes[randomIndex].text;
 }
 
-// Add a new quote (Point 5 & 6)
+// Add new quote to collection
 function addQuote() {
-    const newQuoteText = document.getElementById("newQuoteText").value.trim();
-    const newQuoteCategory = document.getElementById("newQuoteCategory").value.trim();
-
-    if (!newQuoteText || !newQuoteCategory) {
-        alert("Please enter both quote and category.");
+    const text = document.getElementById('newQuoteText').value.trim();
+    const category = document.getElementById('newQuoteCategory').value.trim();
+    
+    if (!text || !category) {
+        alert('Please enter both quote text and category');
         return;
     }
-
-    // Add new quote to array
-    quotes.push({ 
-        text: newQuoteText, 
-        category: newQuoteCategory 
-    });
     
-    // Update UI
+    quotes.push({ text, category });
     updateCategorySelect();
-    document.getElementById("newQuoteText").value = '';
-    document.getElementById("newQuoteCategory").value = '';
-    
-    // Show the newly added quote
+    document.getElementById('newQuoteText').value = '';
+    document.getElementById('newQuoteCategory').value = '';
+    alert('Quote added successfully!');
     showRandomQuote();
 }
 
-// Event listener for "Show New Quote" button (Point 7)
-document.getElementById("newQuote").addEventListener("click", function() {
-    showRandomQuote();
-});
-
-// Also support the HTML onclick attribute
-window.addQuote = addQuote;
-
-// Initialize category list
-updateCategorySelect();
+// Start the application
+init();
