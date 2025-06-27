@@ -84,6 +84,7 @@ function addQuote() {
     saveQuotes();
     populateCategories();
     showRandomQuote();
+    postQuoteToServer({ text, category });
 }
 
 function exportQuotes() {
@@ -108,44 +109,59 @@ function importFromJsonFile(event) {
     reader.readAsText(event.target.files[0]);
 }
 
-// Fetch quotes from the server using a mock API
 async function fetchServerQuotes() {
     const res = await fetch('https://jsonplaceholder.typicode.com/posts');
     const data = await res.json();
     return data.map(p => ({ text: p.title, category: 'Server' }));
 }
 
-// Post quotes to the server using a mock API
-async function postQuotesToServer() {
+async function postQuoteToServer(quote) {
     await fetch('https://jsonplaceholder.typicode.com/posts', {
         method: 'POST',
-        body: JSON.stringify(quotes),
+        body: JSON.stringify(quote),
         headers: { 'Content-Type': 'application/json' }
     });
 }
 
-// Sync quotes with the server
+async function postQuotesToServer() {
+    for (let q of quotes) {
+        await postQuoteToServer(q);
+    }
+}
+
 async function syncQuotes() {
     try {
         syncIcon.classList.add('syncing');
         const serverQuotes = await fetchServerQuotes();
-        const localSet = new Set(quotes.map(q => q.text));
-        const newFromServer = serverQuotes.filter(q => !localSet.has(q.text));
 
-        if (newFromServer.length > 0) {
-            document.getElementById('newQuotesCount').textContent = newFromServer.length;
-            notificationContent.textContent = 'New quotes fetched from server';
+        // Conflict detection
+        const localMap = new Map(quotes.map(q => [q.text, q]));
+        const serverMap = new Map(serverQuotes.map(q => [q.text, q]));
+
+        const mergedQuotes = [...quotes];
+        let newCount = 0;
+
+        serverQuotes.forEach(serverQ => {
+            if (!localMap.has(serverQ.text)) {
+                mergedQuotes.push(serverQ);
+                newCount++;
+            }
+        });
+
+        quotes = mergedQuotes;
+        saveQuotes();
+        populateCategories();
+        showRandomQuote();
+
+        if (newCount > 0) {
+            notificationContent.textContent = `Fetched ${newCount} new quotes from server.`;
+            document.getElementById('newQuotesCount').textContent = newCount;
             document.getElementById('syncDetails').style.display = 'block';
             notification.style.display = 'block';
-            quotes.push(...newFromServer);
-            saveQuotes();
-            populateCategories();
-            showRandomQuote();
         }
 
         lastSyncTime.textContent = `Last synced at ${new Date().toLocaleTimeString()}`;
         await postQuotesToServer();
-
     } catch (e) {
         console.error('Sync failed', e);
     } finally {
@@ -153,10 +169,20 @@ async function syncQuotes() {
     }
 }
 
-// Resolve conflicts based on user action
 function resolveConflict(action) {
-    // Implement your merge/overwrite logic based on action
     conflictPanel.style.display = 'none';
+    if (action === 'server') {
+        fetchServerQuotes().then(data => {
+            quotes = data;
+            saveQuotes();
+            populateCategories();
+            showRandomQuote();
+        });
+    } else if (action === 'merge') {
+        syncQuotes();
+    } else {
+        saveQuotes();
+    }
     alert(`Conflict resolved using: ${action}`);
 }
 
