@@ -41,12 +41,20 @@
     </div>
     
     <div id="quoteDisplay">Click "Show New Quote" to begin</div>
+    <div id="lastQuote" style="font-size: 0.9em; color: #666;"></div>
     
     <div id="addQuoteForm">
         <h3>Add New Quote</h3>
-        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-        <input id="newQuoteCategory" type="text" placeholder="Enter category" />
-        <button id="addQuoteBtn">Add Quote</button>
+        <div style="margin-bottom: 10px;">
+            <input id="newQuoteText" type="text" placeholder="Enter a new quote" style="width: 100%" />
+        </div>
+        <div style="margin-bottom: 10px;">
+            <input id="newQuoteCategory" type="text" placeholder="Enter category" style="width: 100%" />
+        </div>
+        <button id="addQuoteBtn" style="margin-bottom: 15px;">Add Quote</button>
+        <button id="exportBtn">Export Quotes</button>
+        <button id="importBtn">Import Quotes</button>
+        <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" style="display: none" />
     </div>
     <script src="script.js"></script>
 </body>
