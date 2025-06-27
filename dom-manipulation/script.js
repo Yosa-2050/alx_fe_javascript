@@ -37,7 +37,7 @@ function showRandomQuote() {
     quoteDisplay.textContent = randomQuote.text;
 }
 
-// Add a new quote
+// Add a new quote (Point 5 & 6)
 function addQuote() {
     const newQuoteText = document.getElementById("newQuoteText").value.trim();
     const newQuoteCategory = document.getElementById("newQuoteCategory").value.trim();
@@ -47,14 +47,28 @@ function addQuote() {
         return;
     }
 
-    quotes.push({ text: newQuoteText, category: newQuoteCategory });
+    // Add new quote to array
+    quotes.push({ 
+        text: newQuoteText, 
+        category: newQuoteCategory 
+    });
+    
+    // Update UI
     updateCategorySelect();
     document.getElementById("newQuoteText").value = '';
     document.getElementById("newQuoteCategory").value = '';
+    
+    // Show the newly added quote
+    showRandomQuote();
 }
 
-// Event listener for the "Show New Quote" button
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+// Event listener for "Show New Quote" button (Point 7)
+document.getElementById("newQuote").addEventListener("click", function() {
+    showRandomQuote();
+});
+
+// Also support the HTML onclick attribute
+window.addQuote = addQuote;
 
 // Initialize category list
 updateCategorySelect();
