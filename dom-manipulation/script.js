@@ -108,12 +108,14 @@ function importFromJsonFile(event) {
     reader.readAsText(event.target.files[0]);
 }
 
+// Fetch quotes from the server using a mock API
 async function fetchServerQuotes() {
     const res = await fetch('https://jsonplaceholder.typicode.com/posts');
     const data = await res.json();
     return data.map(p => ({ text: p.title, category: 'Server' }));
 }
 
+// Post quotes to the server using a mock API
 async function postQuotesToServer() {
     await fetch('https://jsonplaceholder.typicode.com/posts', {
         method: 'POST',
@@ -122,6 +124,7 @@ async function postQuotesToServer() {
     });
 }
 
+// Sync quotes with the server
 async function syncQuotes() {
     try {
         syncIcon.classList.add('syncing');
@@ -150,6 +153,7 @@ async function syncQuotes() {
     }
 }
 
+// Resolve conflicts based on user action
 function resolveConflict(action) {
     // Implement your merge/overwrite logic based on action
     conflictPanel.style.display = 'none';
